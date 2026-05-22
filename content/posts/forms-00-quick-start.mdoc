@@ -1,0 +1,157 @@
+﻿---
+title: '@letar/forms за 5 минут'
+description: >-
+  Установка → схема → 5 строк JSX → работающая форма с валидацией, accessibility и TypeScript. Быстрый старт без философии — только код.
+publishedAt: '2026-05-08'
+tags:
+  - react
+  - формы
+  - typescript
+  - quick-start
+featured: false
+---
+**TL;DR:** Установка → схема → 5 строк JSX → работающая форма с валидацией, accessibility и TypeScript.
+
+> Quick Start: установка, первая форма, результат. Без философии — только код.
+
+---
+
+## Установка
+
+```bash
+npm install @letar/forms @chakra-ui/react zod
+```
+
+`@letar/forms` работает с **React 19**, **Chakra UI v3** и **Zod v4**.
+
+---
+
+## Первая форма
+
+```tsx
+import { Form } from '@letar/forms'
+import { z } from 'zod/v4'
+
+// 1. Схема — единый источник правды для валидации и UI
+const ContactSchema = z.object({
+  name: z
+    .string()
+    .min(2)
+    .meta({
+      ui: { title: 'Имя', placeholder: 'Как вас зовут?' },
+    }),
+  email: z
+    .string()
+    .email()
+    .meta({
+      ui: { title: 'Email', placeholder: 'user@example.com' },
+    }),
+  message: z
+    .string()
+    .max(1000)
+    .meta({
+      ui: { title: 'Сообщение' },
+    }),
+})
+
+// 2. Форма — 5 строк JSX
+function ContactForm() {
+  return (
+    <Form
+      schema={ContactSchema}
+      initialValue={{ name: '', email: '', message: '' }}
+      onSubmit={async ({ value }) => {
+        await fetch('/api/contact', {
+          method: 'POST',
+          body: JSON.stringify(value),
+        })
+      }}
+    >
+      <Form.Field.String name="name" />
+      <Form.Field.String name="email" />
+      <Form.Field.Textarea name="message" />
+      <Form.Button.Submit>Отправить</Form.Button.Submit>
+    </Form>
+  )
+}
+```
+
+Что уже работает:
+
+- **Валидация** — `min(2)`, `email()`, `max(1000)` из Zod
+- **Label и placeholder** — из `.meta({ ui })`, не из JSX
+- **Ошибки** — показываются автоматически под полем
+- **TypeScript** — опечатка в `name` = ошибка компиляции
+- **Accessibility** — `aria-invalid`, `aria-describedby`, уникальные `id`
+- **Submit** — кнопка сама блокируется при отправке и показывает спиннер
+
+---
+
+## Ещё короче: автогенерация
+
+```tsx
+<Form.FromSchema
+  schema={ContactSchema}
+  initialValue={{ name: '', email: '', message: '' }}
+  onSubmit={handleSubmit}
+  submitLabel="Отправить"
+/>
+```
+
+Одна строка вместо ручной вёрстки. Библиотека сама выбирает компоненты по типам Zod-схемы.
+
+---
+
+## Loading state за 1 строку
+
+Пока данные для формы грузятся с сервера, обычно нужно показать скелетон. Без библиотеки это 15–20 строк ручных `<Skeleton />`. С `@letar/forms`:
+
+```tsx
+import { FormSkeleton } from '@letar/forms'
+
+// Скелетон автоматически повторяет структуру формы
+<FormSkeleton fields={ContactSchema} showSubmit />
+```
+
+`FormSkeleton` читает Zod-схему и создаёт скелетон с нужным количеством полей и кнопкой отправки. Когда данные загрузились — просто рендерите `<Form>` вместо скелетона:
+
+```tsx
+{
+  isLoading
+    ? <FormSkeleton fields={ContactSchema} showSubmit />
+    : (
+      <Form schema={ContactSchema} initialValue={data} onSubmit={save}>
+        ...
+      </Form>
+    )
+}
+```
+
+---
+
+## Что дальше
+
+- **Документация:** [forms.letar.best](https://forms.letar.best)
+- **16 интерактивных примеров:** [forms-example.letar.best](https://forms-example.letar.best)
+- **Исходный код примеров:** [GitHub](https://github.com/kamiletar/letar/tree/main/apps/form-example)
+- **MCP для AI:** `npx @letar/form-mcp` — AI-ассистент узнает про все 50+ полей
+
+Хотите понять, _зачем_ это нужно и какие проблемы решает? Читайте [статью 1: Формы в React — почему всё ещё больно](/blog/forms-01-why-forms-hurt).
+
+---
+
+## Все статьи цикла
+
+0. ~~@letar/forms за 5 минут~~ _(вы здесь)_
+1. [Формы в React — почему всё ещё больно](/blog/forms-01-why-forms-hurt)
+2. [Zod `.meta()` — одна схема для валидации и UI](/blog/forms-02-zod-meta)
+3. [Compound Components vs конфиг-объекты](/blog/forms-03-compound-components)
+4. [50+ полей: от String до CreditCard](/blog/forms-04-all-fields)
+5. [Мультистеп формы и условный рендеринг](/blog/forms-05-multistep)
+6. [Массивы и вложенные объекты](/blog/forms-06-arrays-groups)
+7. [FromSchema: генерируем форму из одной строки](/blog/forms-07-from-schema)
+8. [От БД до формы за 5 минут](/blog/forms-08-zenstack)
+9. [Offline-first формы](/blog/forms-09-offline)
+10. [i18n: формы на любом языке](/blog/forms-10-i18n)
+11. [MCP: как AI пишет формы за тебя](/blog/forms-11-mcp)
+12. [Релиз: как мы опенсорсили form-библиотеку](/blog/forms-12-open-source)
