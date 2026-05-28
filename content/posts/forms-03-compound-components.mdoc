@@ -265,6 +265,8 @@ export const Form = Object.assign(FormRoot, {
 
 Три уровня контекста:
 
+![Дерево контекстов: Form → Group → Field](/blog/forms-images/03-context-tree.svg)
+
 1. **FormContext** — инстанс TanStack Form, Zod-схема, конфиг
 2. **GroupContext** — префикс пути (для вложенных объектов и массивов)
 3. **FieldContext** — конкретное поле, его состояние, ошибки
