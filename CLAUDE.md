@@ -35,6 +35,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `tags`          | список строк   | например `- психология`                     |
 | `featured`      | булево         | `true` закрепляет пост в featured-слоте     |
 
+## Картинки в постах
+
+Картинки хранятся **прямо в этом репозитории** рядом с постом: `content/posts/<slug>/content/filename.webp`. Отдельно ничего копировать не нужно.
+
+В тексте ссылайся через **GitHub raw URL**:
+
+```
+![Описание картинки](https://raw.githubusercontent.com/kamiletar/kami-blog/main/content/posts/<slug>/content/filename.webp)
+```
+
+Если нужна подпись под картинкой — добавь `title` в кавычках:
+
+```
+![Описание картинки](https://raw.githubusercontent.com/kamiletar/kami-blog/main/content/posts/<slug>/content/filename.webp "Текст подписи")
+```
+
+### Почему raw URL, а не просто имя файла
+
+Keystatic не трансформирует относительные пути при чтении с GitHub. Если написать просто `filename.webp` — на сайте картинка не покажется.
+
+### Форматы
+
+Предпочтительны `.webp` (меньше весят) и `.png`/`.jpg`. Ширина рендера — 900px, высота подгоняется автоматически.
+
 ## Двуязычный контент
 
 Русский — основной язык. Английские переводы лежат в соседнем файле: `content/posts/<slug>/contentEn.mdoc`. У обоих длинных постов сейчас пустые `contentEn.mdoc` — перевод ещё не сделан. У "одно-файлового" варианта нет места под английское тело; если посту нужен перевод, сначала мигрируй его в папочный вариант.
